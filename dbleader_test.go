@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/loopholelabs/logging"
-	"github.com/shivanshvij/dblock"
 	"github.com/stretchr/testify/require"
 )
 
@@ -17,26 +16,22 @@ func TestLeadership(t *testing.T) {
 	connStr := fmt.Sprintf("file:%s/%s?cache=private&_fk=1", t.TempDir(), t.Name())
 
 	leader0, err := New(&Options{
-		Logger:    logging.Test(t, logging.Zerolog, t.Name()),
-		Name:      "leader0",
-		Namespace: t.Name(),
-		DBLockOptions: DBLockOptions{
-			DBType:        dblock.SQLite,
-			DatabaseURL:   connStr,
-			LeaseDuration: leaseDuration,
-		},
+		Logger:        logging.Test(t, logging.Zerolog, t.Name()),
+		Name:          "leader0",
+		Namespace:     t.Name(),
+		DBType:        SQLite,
+		DatabaseURL:   connStr,
+		LeaseDuration: leaseDuration,
 	})
 	require.NoError(t, err)
 
 	leader1, err := New(&Options{
-		Logger:    logging.Test(t, logging.Zerolog, t.Name()),
-		Name:      "leader1",
-		Namespace: t.Name(),
-		DBLockOptions: DBLockOptions{
-			DBType:        dblock.SQLite,
-			DatabaseURL:   connStr,
-			LeaseDuration: leaseDuration,
-		},
+		Logger:        logging.Test(t, logging.Zerolog, t.Name()),
+		Name:          "leader1",
+		Namespace:     t.Name(),
+		DBType:        SQLite,
+		DatabaseURL:   connStr,
+		LeaseDuration: leaseDuration,
 	})
 	require.NoError(t, err)
 

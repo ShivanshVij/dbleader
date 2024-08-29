@@ -12,22 +12,30 @@ import (
 )
 
 var (
-	ErrInvalidName      = errors.New("invalid name")
-	ErrInvalidNamespace = errors.New("invalid namespace")
+	ErrInvalidName                  = errors.New("invalid name")
+	ErrInvalidNamespace             = errors.New("invalid namespace")
+	ErrInvalidDBType                = errors.New("invalid database type")
+	ErrInvalidDatabaseURL           = errors.New("invalid database URL")
+	ErrInvalidLeaseDuration         = errors.New("invalid lease duration")
+	ErrInvalidLeaseRefreshFrequency = errors.New("invalid lease refresh frequency")
 )
 
-type DBLockOptions struct {
-	DBType                dblock.DBType
+type DBType int
+
+const (
+	Undefined DBType = iota
+	Postgres
+	SQLite
+)
+
+type Options struct {
+	Logger                types.SubLogger
+	Name                  string
+	Namespace             string
+	DBType                DBType
 	DatabaseURL           string
 	LeaseDuration         time.Duration
 	LeaseRefreshFrequency time.Duration
-}
-
-type Options struct {
-	Logger        types.SubLogger
-	Name          string
-	Namespace     string
-	DBLockOptions DBLockOptions
 }
 
 func (o *Options) Validate() error {
@@ -43,17 +51,46 @@ func (o *Options) Validate() error {
 		return ErrInvalidNamespace
 	}
 
+	if o.DBType != Postgres && o.DBType != SQLite {
+		return ErrInvalidDBType
+	}
+
+	if o.DatabaseURL == "" {
+		return ErrInvalidDatabaseURL
+	}
+
+	if o.LeaseDuration == 0 {
+		return ErrInvalidLeaseDuration
+	}
+
+	if o.LeaseRefreshFrequency >= o.LeaseDuration {
+		return ErrInvalidLeaseRefreshFrequency
+	}
+
+	if o.LeaseRefreshFrequency == 0 {
+		o.LeaseRefreshFrequency = o.LeaseDuration / 2
+	}
+
 	return nil
 }
 
 func (o *Options) getDBLockOptions(logger types.SubLogger) (*dblock.Options, error) {
+	dbType := dblock.Undefined
+	switch o.DBType {
+	case Postgres:
+		dbType = dblock.Postgres
+	case SQLite:
+		dbType = dblock.SQLite
+	default:
+		return nil, dblock.ErrInvalidDBType
+	}
 	options := &dblock.Options{
 		Logger:                logger,
 		Owner:                 o.Name,
-		DBType:                o.DBLockOptions.DBType,
-		DatabaseURL:           o.DBLockOptions.DatabaseURL,
-		LeaseDuration:         o.DBLockOptions.LeaseDuration,
-		LeaseRefreshFrequency: o.DBLockOptions.LeaseRefreshFrequency,
+		DBType:                dbType,
+		DatabaseURL:           o.DatabaseURL,
+		LeaseDuration:         o.LeaseDuration,
+		LeaseRefreshFrequency: o.LeaseRefreshFrequency,
 	}
 	return options, options.Validate()
 }
