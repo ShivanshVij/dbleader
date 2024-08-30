@@ -4,11 +4,11 @@ package dbleader
 
 import (
 	"errors"
-	"github.com/shivanshvij/dblock"
 	"time"
 
 	"github.com/loopholelabs/logging/loggers/noop"
 	"github.com/loopholelabs/logging/types"
+	"github.com/shivanshvij/dblock"
 )
 
 var (
@@ -29,7 +29,7 @@ const (
 )
 
 type Options struct {
-	Logger                types.SubLogger
+	Logger                types.Logger
 	Name                  string
 	Namespace             string
 	DBType                DBType
@@ -74,7 +74,7 @@ func (o *Options) Validate() error {
 	return nil
 }
 
-func (o *Options) getDBLockOptions(logger types.SubLogger) (*dblock.Options, error) {
+func (o *Options) getDBLockOptions(logger types.Logger) (*dblock.Options, error) {
 	dbType := dblock.Undefined
 	switch o.DBType {
 	case Postgres:

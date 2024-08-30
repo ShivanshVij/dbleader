@@ -1,12 +1,14 @@
+// SPDX-License-Identifier: Apache-2.0
+
 package dbleader
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
 
 	"github.com/loopholelabs/logging"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 

@@ -5,12 +5,13 @@ package dbleader
 import (
 	"context"
 	"errors"
-	"github.com/shivanshvij/dbleader/pkg/broadcast"
 	"sync"
 	"sync/atomic"
 
 	"github.com/loopholelabs/logging/types"
 	"github.com/shivanshvij/dblock"
+
+	"github.com/shivanshvij/dbleader/pkg/broadcast"
 )
 
 var (
@@ -36,7 +37,7 @@ const (
 )
 
 type DBLeader struct {
-	logger  types.SubLogger
+	logger  types.Logger
 	options *Options
 
 	ctx    context.Context
