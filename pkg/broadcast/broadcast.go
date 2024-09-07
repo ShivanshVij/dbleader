@@ -2,7 +2,11 @@
 
 package broadcast
 
-import "sync"
+import (
+	"sync"
+
+	"github.com/shivanshvij/dbleader/pkg/utils"
+)
 
 type _subscriber[T any] struct {
 	ch  chan<- T
@@ -31,7 +35,7 @@ func (b *Broadcast[T]) Unsubscribe(ch <-chan T) {
 	b.mu.Lock()
 	for i, subscriber := range b.subscribers {
 		if subscriber._ch == ch {
-			b.subscribers = append(b.subscribers[:i], b.subscribers[i+1:]...)
+			b.subscribers = utils.RemoveFromSlice(b.subscribers, i)
 			close(subscriber.ch)
 			break
 		}
