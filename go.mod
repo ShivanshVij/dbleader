@@ -3,7 +3,7 @@ module github.com/shivanshvij/dbleader
 go 1.23.0
 
 require (
-	github.com/loopholelabs/logging v0.3.0
+	github.com/loopholelabs/logging v0.3.1
 	github.com/shivanshvij/dblock v0.3.0
 	github.com/stretchr/testify v1.9.0
 )
