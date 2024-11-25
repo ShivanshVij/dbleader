@@ -5,7 +5,7 @@ go 1.23.0
 require (
 	github.com/loopholelabs/logging v0.3.0
 	github.com/shivanshvij/dblock v0.3.0
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 )
 
 require (
